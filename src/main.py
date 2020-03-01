@@ -6,7 +6,6 @@ import users
 
 app = FastAPI()
 
-
 # Registration
 def check_existing_user(username: str):
     for user in users.users:
