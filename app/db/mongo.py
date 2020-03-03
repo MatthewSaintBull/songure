@@ -1,13 +1,14 @@
 # pylint: disable=no-name-in-module
 from pymongo import MongoClient
-from Models import User
-from config import config
+from app.models.user import User
+from app.config.config import config
+from app.db.singleton import Singleton
 
-class DB():
+class DB(metaclass=Singleton):
     def __init__(self, env: str = "dev"):
         if env == "dev":
-            self.client = MongoClient(config.config["dev"]["db_host"], authSource='songure')
-            self.db = self.client[config.config["dev"]["db_name"]]
+            self.client = MongoClient(config["dev"]["db_host"], authSource='songure')
+            self.db = self.client[config["dev"]["db_name"]]
         print("DB CONNECTED @ ENV:",env)
 
     def register(self, user: User):

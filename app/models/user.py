@@ -2,11 +2,6 @@
 from pydantic import BaseModel, ValidationError, validator
 import re
 
-
-class Error(BaseModel):
-    message: str
-
-
 class User(BaseModel):
     username: str
     full_name: str
