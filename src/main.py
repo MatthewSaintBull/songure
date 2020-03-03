@@ -7,13 +7,6 @@ import users
 app = FastAPI()
 db = DB()
 
-# Registration
-def check_existing_user(username: str):
-    for user in users.users:
-        if user["username"] == username:
-            return True
-    return False
-
 @app.post("/register")
 def register(user: User):
     if not db.register(user):

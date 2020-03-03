@@ -35,7 +35,6 @@ class User(BaseModel):
     @validator('email')
     def email_is_valid(cls, v):
         pattern = re.compile(r"\"?([-a-zA-Z0-9.`?{}]+@\w+\.\w+)\"?")
-        print(v)
         if not re.match(pattern, v):
             raise ValueError('entered a non valid email')
         return v.title()

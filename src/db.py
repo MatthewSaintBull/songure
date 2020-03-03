@@ -1,3 +1,4 @@
+# pylint: disable=no-name-in-module
 from pymongo import MongoClient
 from Models import User
 from config import config
@@ -16,5 +17,5 @@ class DB():
         return False
 
     def search_user(self, user: User):
-        #Check if user already exists in db
-        pass
+        if self.db["users"].find_one({"$or":[{"username":user.username},{"email":user.email}]}):
+            return True
