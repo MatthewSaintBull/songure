@@ -6,7 +6,8 @@ COPY requirements.txt ./
 
 RUN pip install --no-cache-dir -r requirements.txt
     
-COPY ./src .
+COPY ./app ./app
+COPY ./test ./test
 
-CMD [ "uvicorn", "main:app", "--reload", "--port", "8080", "--host", "0.0.0.0" ]
+CMD [ "uvicorn", "app.main:app", "--reload", "--port", "8080", "--host", "0.0.0.0" ]
 EXPOSE 8080/tcp
