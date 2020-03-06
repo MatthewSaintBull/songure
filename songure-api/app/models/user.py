@@ -33,3 +33,9 @@ class User(BaseModel):
         if not re.match(pattern, v):
             raise ValueError('entered a non valid email')
         return v.title()
+
+
+class OauthUser(BaseModel):
+    username: str
+    full_name: str
+    email: str
