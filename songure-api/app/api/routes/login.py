@@ -13,32 +13,48 @@ import json
 
 db = DB()
 router = APIRouter()
+
+# Fetch credentials from config file
+
 GOOGLE_CLIENT_ID = config["dev"]["google_client_id"]
 GOOGLE_CLIENT_SECRET = config["dev"]["google_secret_id"]
+
+# OPENID URL
+
 GOOGLE_DISCOVERY_URL = (
     "https://accounts.google.com/.well-known/openid-configuration"
 )
+
+# Generating the WebApplicationClient for OPENID
+
 client = WebApplicationClient(GOOGLE_CLIENT_ID)
 
 
+
+# Returns all the config about the google Oauth2
 def get_google_provider_cfg():
     return requests.get(GOOGLE_DISCOVERY_URL).json()
 
 
-@router.get('/login')
-def login():
+@router.get('/google')
+def loginWithGoogle():
 
     google_provider_cfg = get_google_provider_cfg()
     authorization_endpoint = google_provider_cfg["authorization_endpoint"]
-    print("AUTH END", authorization_endpoint)
 
+    # prepare the request with the necessaries params
     request_uri = client.prepare_request_uri(
         authorization_endpoint,
-        redirect_uri="http://localhost:8080/auth",
-        scope=["openid", "email", "profile"],
+        redirect_uri="http://localhost:8080/Oauth2Callback",
+        scope=["openid", "email", "profile"], # info requested on openid
     )
-    return RedirectResponse(request_uri)
 
+    print(request_uri)
+
+    return RedirectResponse(request_uri) # redirects on the request_uri generated before
+
+
+# Generates random username for the new users
 
 def gen_rand_user(fullname, email):
     username = email.split("@")[0] + str(uuid.uuid4())[:8]
@@ -48,14 +64,16 @@ def gen_rand_user(fullname, email):
     gen_rand_user(fullname, email)
 
 
-@router.get('/auth')
+# authorization callback called by google
+
+@router.get('/Oauth2Callback')
 def auth(code: str, request: Request):
     google_provider_cfg = get_google_provider_cfg()
     token_endpoint = google_provider_cfg["token_endpoint"]
     token_url, headers, body = client.prepare_token_request(
         token_url=token_endpoint,
         authorization_response=str(request.url),
-        redirect_url="http://localhost:8080/auth",
+        redirect_url="http://localhost:8080/Oauth2Callback",
         code=code,
     )
 
