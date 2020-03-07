@@ -28,14 +28,16 @@ You have to replace the fields with your own data.
 Below the description about the fields.
 
     config = { 
-    "dev": { # the environment. At the moment only dev leave it as is
-        "db_host": "127.0.0.1", # the db host where its located. You can leave it as is if you decided to use everything in only one server
-        "db_port": "27017", # the db port. Remember to replace it even in the Dockerfile and docker-compose.yml
-        "db_name": "songure", #Your db name, you can replace as you want
-        "db_admin": "admin", #db username. Replace it with the same username put inside the .env at the step 1
-        "db_password": "password" # same as db username
+        "dev": { # the environment. At the moment only dev leave it as is
+            "db_host": "127.0.0.1", # the db host where its located. You can leave it as is if you decided to use everything in only one server
+            "db_port": "27017", # the db port. Remember to replace it even in the Dockerfile and docker-compose.yml
+            "db_name": "songure", # Your db name, you can replace as you want
+            "db_admin": "admin", # db username. Replace it with the same username put inside the .env at the step 1
+            "db_password": "password", # same as db username
+            "google_client_id": "xxxxxx", # your google client id
+            "google_secret_id":"xxxxxx" # your google secret key
+        }
     }
-}
 
 ## 3
 ### Deploy your stack! :rocket:
