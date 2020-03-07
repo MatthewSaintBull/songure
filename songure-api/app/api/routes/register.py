@@ -7,8 +7,8 @@ router = APIRouter()
 
 @router.post("/register")
 def register(user: User):
-    print(user)
-    if not db.register(user.dict())[0]:
+    result = db.register(user.dict())
+    if not result:
         raise HTTPException(
         status_code= 403,
         detail="User/Mail already exists"

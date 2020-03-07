@@ -17,11 +17,10 @@ class DB(metaclass=Singleton):
         print("DB CONNECTED @ ENV:", env)
 
     def register(self, user: dict):
-        has_oauth = bool(user.get("Oauth"))
         if not self.search_user(user):
             self.db["users"].insert_one(user)
-            return (True, has_oauth)
-        return (False, has_oauth)
+            return True
+        return False
 
     def search_user_by_email(self, email):
         result = self.db["users"].find_one({"email": email})

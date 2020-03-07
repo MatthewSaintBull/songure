@@ -76,12 +76,17 @@ def auth(code: str, request: Request):
         email = userinfo_response.json()["email"]
         fullname = userinfo_response.json()["name"]
 
-        db.register({"email": email, "full_name": fullname, "username": gen_rand_user(
+        result = db.register({"email": email, "full_name": fullname, "username": gen_rand_user(
             fullname, email), "Oauth": "google"})
-
+        
         # db.login()
+        
+        if not result:
+            return RedirectResponse("http://localhost:8080/") 
+        else: return RedirectResponse("http://localhost:8080/set_user")
+        
 
     else:
         return "User email not available or not verified by Google.", 400
 
-    return RedirectResponse("http://localhost:8080/set_user")
+    
