@@ -15,18 +15,15 @@ db = DB()
 router = APIRouter()
 
 # Fetch credentials from config file
-
 GOOGLE_CLIENT_ID = config["dev"]["google_client_id"]
 GOOGLE_CLIENT_SECRET = config["dev"]["google_secret_id"]
 
 # OPENID URL
-
 GOOGLE_DISCOVERY_URL = (
     "https://accounts.google.com/.well-known/openid-configuration"
 )
 
 # Generating the WebApplicationClient for OPENID
-
 client = WebApplicationClient(GOOGLE_CLIENT_ID)
 
 
@@ -35,7 +32,7 @@ client = WebApplicationClient(GOOGLE_CLIENT_ID)
 def get_google_provider_cfg():
     return requests.get(GOOGLE_DISCOVERY_URL).json()
 
-
+# Login with google 
 @router.get('/google')
 def loginWithGoogle():
 
@@ -45,17 +42,15 @@ def loginWithGoogle():
     # prepare the request with the necessaries params
     request_uri = client.prepare_request_uri(
         authorization_endpoint,
-        redirect_uri="http://localhost:8080/Oauth2Callback",
+        redirect_uri="http://localhost:8080/api/Oauth2Callback",
         scope=["openid", "email", "profile"], # info requested on openid
     )
 
-    print(request_uri)
 
     return RedirectResponse(request_uri) # redirects on the request_uri generated before
 
 
 # Generates random username for the new users
-
 def gen_rand_user(fullname, email):
     username = email.split("@")[0] + str(uuid.uuid4())[:8]
     result = db.search_user_by_username(username)
@@ -64,16 +59,16 @@ def gen_rand_user(fullname, email):
     gen_rand_user(fullname, email)
 
 
-# authorization callback called by google
-
+# Authorization callback called by google
 @router.get('/Oauth2Callback')
 def auth(code: str, request: Request):
     google_provider_cfg = get_google_provider_cfg()
     token_endpoint = google_provider_cfg["token_endpoint"]
+    # Authorization 
     token_url, headers, body = client.prepare_token_request(
         token_url=token_endpoint,
         authorization_response=str(request.url),
-        redirect_url="http://localhost:8080/Oauth2Callback",
+        redirect_url="http://localhost:8080/api/Oauth2Callback",
         code=code,
     )
 
@@ -83,6 +78,7 @@ def auth(code: str, request: Request):
         data=body,
         auth=(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET),
     )
+
     print("TOKEN ? : ", token_response.json())
     client.parse_request_body_response(json.dumps(token_response.json()))
     userinfo_endpoint = google_provider_cfg["userinfo_endpoint"]
